@@ -1,0 +1,49 @@
+[System]
+Name='Fuzzy Logic and Defuzzification Animation UPDATED'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=9
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='Distance'
+Range=[-0.2 0]
+NumMFs=3
+MF1='far':'trapmf',[-0.2 -0.2 -0.08 -0.06]
+MF2='safe':'trapmf',[-0.08 -0.06 -0.03 -0.01]
+MF3='close':'trapmf',[-0.03 -0.01 0 0]
+
+[Input2]
+Name='Relative_Speed'
+Range=[-15 15]
+NumMFs=3
+MF1='slower':'linzmf',[-15 0]
+MF2='equal':'trimf',[-15 0 15]
+MF3='faster':'linsmf',[0 15]
+
+[Output1]
+Name='Reaction'
+Range=[-15 15]
+NumMFs=5
+MF1='Brake_Hard':'linzmf',[-15 -5]
+MF2='Brake_Moderately':'trimf',[-15 -5 0]
+MF3='Accelerate_Moderately':'trimf',[0 5 15]
+MF4='Maintain_Speed':'trimf',[-5 0 5]
+MF5='Accelerate_Hard':'linsmf',[5 15]
+
+[Rules]
+3 1, 4 (1) : 1
+3 2, 2 (1) : 1
+3 3, 1 (1) : 1
+2 1, 5 (1) : 1
+2 2, 4 (1) : 1
+2 3, 2 (1) : 1
+1 1, 5 (1) : 1
+1 2, 3 (1) : 1
+1 3, 4 (1) : 1

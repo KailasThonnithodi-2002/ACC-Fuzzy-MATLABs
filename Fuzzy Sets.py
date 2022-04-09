@@ -1,20 +1,25 @@
+# Import libraries required
 import numpy as np
 import skfuzzy as fuzz
 import matplotlib.pyplot as plt
 
-
+# Determine ranges for the graphs
 x_SpeedRel = np.arange(-15, 20, 5)
 x_DistanceFrom = np.arange(-30, 5, 5)
 x_input = np.arange(-15, 20, 5)
-# Generate fuzzy membership functions
+
+# Generate fuzzy membership functions 
+# Relative Speed Declaration
 SpeedRel_Slower = fuzz.trimf(x_SpeedRel, [-15, -15, 0])
 SpeedRel_Same = fuzz.trimf(x_SpeedRel, [-5, 0, 5])
 SpeedRel_Faster = fuzz.trimf(x_SpeedRel, [0, 15, 15])
 
+# Relative Distance Declaration
 DistanceFrom_Far = fuzz.trimf(x_DistanceFrom, [-30, -30 , -15])
 DistanceFrom_Safe = fuzz.trimf(x_DistanceFrom, [-20, -15, -10])
 DistanceFrom_Close = fuzz.trimf(x_DistanceFrom, [-15, 0, 0])
 
+# Input Declaration
 input_BrakeHard = fuzz.trimf(x_input, [-15, -15, -7.5])
 input_BrakeSoftly = fuzz.trimf(x_input, [-7.5, -3.75, -0])
 input_AccelSlowly = fuzz.trimf(x_input, [0, 3.75, 7.5])
@@ -22,7 +27,7 @@ input_AccelModFast = fuzz.trimf(x_input, [7.5, 15, 15])
 input_Nothing = fuzz.trimf(x_input, [-5, 0, 5])
 
 
-# Visualize these universes and membership functions
+# Visualize these universes and membership functions - Refer to matplot documentation for more info (https://matplotlib.org/stable/index.html)
 fig, (ax0, ax1, ax2) = plt.subplots(nrows=3, figsize=(8, 9))
 ax0.plot(x_SpeedRel, SpeedRel_Slower, 'b', linewidth=1.5, label='Slower')
 ax0.plot(x_SpeedRel, SpeedRel_Same, 'g', linewidth=1.5, label='Same Speed')
@@ -55,9 +60,8 @@ for ax in (ax0, ax1, ax2):
 #serv = distance from car
 
 
-# We need the activation of our fuzzy membership functions at these values.
-# The exact values 6.5 and 9.8 do not exist on our universes...
-# This is what fuzz.interp_membership exists for!
+# We need the activation of our fuzzy membership functions at these values
+
 speed_level_lo = fuzz.interp_membership(x_SpeedRel, SpeedRel_Slower, -10)
 speed_level_md = fuzz.interp_membership(x_SpeedRel, SpeedRel_Same, -10)
 speed_level_hi = fuzz.interp_membership(x_SpeedRel, SpeedRel_Faster, -10)
@@ -86,13 +90,12 @@ active_rule9 = np.fmax(speed_level_hi, distance_level_hi)
 
 
 
-# Now we take our rules and apply them. Rule 1 concerns bad food OR service.
-# The OR operator means we take the maximum of these two.
+# Now we take our rules and apply them.
 
 # Now we apply this by clipping the top off the corresponding output
 # membership function with `np.fmin`
-input_activation_lo = np.fmin(active_rule1, input_BrakeHard) # removed entirely to 0
-# For rule 2 we connect acceptable service to medium inputping
+input_activation_lo = np.fmin(active_rule1, input_BrakeHard) 
+
 
 input_activation_md = np.fmin(active_rule8 or active_rule6 or active_rule7, input_BrakeSoftly)
 
